@@ -5,6 +5,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.IOException;
+import com.google.gson.JsonParser;
 
 
 public class OllamaClient {
@@ -24,8 +25,13 @@ public class OllamaClient {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+        String content = JsonParser.parseString(response.body())
+                .getAsJsonObject()
+                .getAsJsonObject("message")
+                .get("content")
+                .getAsString();
 
-        return response.body();
+        return content;
 
     }
 
