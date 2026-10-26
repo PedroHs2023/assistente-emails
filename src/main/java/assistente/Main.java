@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
-        System.out.println(new OllamaClient().perguntar("Qual a capital do brasil"));
-
+        System.out.println(new OllamaClient().perguntar("o que significa \"API\"?"));
+        
     }
 }
