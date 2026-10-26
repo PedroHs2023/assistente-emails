@@ -17,7 +17,15 @@ public class OllamaClient {
                 {"model":"qwen3:8b","stream":false,"think":false,"messages":[{"role":"user","content":"%s"}]}
                 """.formatted(pergunta);
 
-        return json;
+        HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:11434/api/chat"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+
+        return response.body();
 
     }
 
