@@ -15,13 +15,15 @@ public class OllamaClient {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    public String perguntar(String pergunta ) throws  IOException, InterruptedException{
-
-        return perguntar( "Responda sempre em portugues, em no maximo 2 frases.", pergunta);
-
+    public String perguntar(String pergunta) throws IOException, InterruptedException {
+        return perguntar("Responda sempre em português, em no máximo 2 frases.", pergunta);
     }
 
-    public String perguntar(String sistema, String pergunta) throws IOException, InterruptedException{
+    public String perguntar(String sistema, String pergunta) throws IOException, InterruptedException {
+        return perguntar(sistema, pergunta, false);
+    }
+
+    public String perguntar(String sistema, String pergunta, boolean respostaEmJson) throws IOException, InterruptedException{
 
         JsonObject mensagemSistema = new JsonObject();
         mensagemSistema.addProperty("role","system");
@@ -41,6 +43,9 @@ public class OllamaClient {
         corpo.addProperty("think",false);
         corpo.add("messages",mensagens);
 
+        if(respostaEmJson){
+            corpo.addProperty("format", "json");
+        }
         String json = new Gson().toJson(corpo);
 
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:11434/api/chat"))
