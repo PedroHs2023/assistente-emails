@@ -15,14 +15,25 @@ public class OllamaClient {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-    public String perguntar(String pergunta) throws IOException, InterruptedException{
+    public String perguntar(String pergunta ) throws  IOException, InterruptedException{
 
-        JsonObject mensagem = new JsonObject();
-        mensagem.addProperty("content", pergunta);
-        mensagem.addProperty("role","user");
+        return perguntar( "Responda sempre em portugues, em no maximo 2 frases.", pergunta);
+
+    }
+
+    public String perguntar(String sistema, String pergunta) throws IOException, InterruptedException{
+
+        JsonObject mensagemSistema = new JsonObject();
+        mensagemSistema.addProperty("role","system");
+        mensagemSistema.addProperty("content",sistema);
+
+        JsonObject mensagemUsuario = new JsonObject();
+        mensagemUsuario.addProperty("role","user");
+        mensagemUsuario.addProperty("content", pergunta);
 
         JsonArray mensagens = new JsonArray();
-        mensagens.add(mensagem);
+        mensagens.add(mensagemSistema);
+        mensagens.add(mensagemUsuario);
 
         JsonObject corpo = new JsonObject();
         corpo.addProperty("model","qwen3:8b");

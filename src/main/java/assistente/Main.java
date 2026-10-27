@@ -9,8 +9,10 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         try{
+            OllamaClient cliente = new OllamaClient();
 
-            System.out.println(new OllamaClient().perguntar("o que significa \"API\"?"));
+
+            System.out.println(cliente.perguntar("qual a capital do brasil"));
 
         }catch(ConnectException e){
 
