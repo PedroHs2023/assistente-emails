@@ -3,7 +3,9 @@ package assistente;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.security.GeneralSecurityException;
+import java.util.List;
 
+import com.google.api.services.gmail.model.Message;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,6 +39,11 @@ public class Main {
 
             GmailService gmail = new GmailService();
             System.out.println("Conectado ao Gmail!");
+
+            List<Message> mensagens = gmail.listarMensagens(10);
+            for(Message mensagem: mensagens){
+                System.out.println(gmail.buscarAssunto(mensagem.getId()));
+            }
 
         } catch (ConnectException e) {
             System.out.println("Não consegui falar com o Ollama. Ele está aberto?");

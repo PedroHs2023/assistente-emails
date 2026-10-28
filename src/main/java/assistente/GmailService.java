@@ -18,6 +18,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
+import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePartHeader;
 
 public class GmailService {
 
@@ -61,6 +63,40 @@ public class GmailService {
 
     }
 
+    public List<Message> listarMensagens( int quantidade) throws IOException{
+
+        List<Message> mensagens = gmail.users()
+                                        .messages()
+                                        .list("me")
+                                        .setMaxResults((long)quantidade)
+                                        .execute()
+                                        .getMessages();
+
+        return mensagens;
+
+    }
+
+    public  String buscarAssunto(String id) throws  IOException{
+
+        Message mensagem = gmail.users()
+                .messages()
+                .get("me", id)
+                .setFormat("metadata")
+                .execute();
+
+        for( MessagePartHeader cabecalho:mensagem.getPayload().getHeaders()){
+
+            String nome = cabecalho.getName();
+            String valor = cabecalho.getValue();
+
+
+            if(nome.equals("Subject")){
+                return valor;
+            }
+        }
+
+        return "(sem assunto)";
+    }
 
 
 
