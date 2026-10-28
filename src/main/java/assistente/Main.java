@@ -2,6 +2,7 @@ package assistente;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.security.GeneralSecurityException;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -9,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException,GeneralSecurityException {
 
         try {
             OllamaClient cliente = new OllamaClient();
@@ -33,6 +34,9 @@ public class Main {
                 int ano = linguagem.get("ano").getAsInt();         // número
                 System.out.println(nome + " - " + ano);
             }
+
+            GmailService gmail = new GmailService();
+            System.out.println("Conectado ao Gmail!");
 
         } catch (ConnectException e) {
             System.out.println("Não consegui falar com o Ollama. Ele está aberto?");
