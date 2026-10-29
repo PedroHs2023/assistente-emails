@@ -6,10 +6,6 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 import com.google.api.services.gmail.model.Message;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException,GeneralSecurityException {
@@ -46,19 +42,23 @@ public class Main {
                 System.out.println("Sem vagas para relatar");
             }else{
                 for(Message mensagem: mensagens){
-                    System.out.println(gmail.buscarAssunto(mensagem.getId()));
-                    String html = gmail.buscarHtml(mensagem.getId());
+                    String id = mensagem.getId();
+                    String assunto = gmail.buscarAssunto(id);
+                    String html = gmail.buscarHtml(id);
 
                     if(html == null){
-                        System.out.println("Sem HTML");
-                    }else{
-                        List<Link> links = leitor.extrairLinks(html);
-                        System.out.println("Links filtrados: " + links.size());
-
-                        for(Link link : links){
-                            System.out.println(" " + link.texto() + " → " + link.endereco());
-                        }
+                        System.out.println("Sem HTML: " + assunto);
+                        continue;
                     }
+
+                    String texto  = leitor.extrairTexto(html);
+                    List<Link> links = leitor.extrairLinks(html);
+
+                    Email email = new Email(id,assunto,texto,links);
+                    System.out.println(email.assunto());
+                    System.out.println("  Texto: " + email.texto().length()+ " caracteres");
+                    System.out.println("  Links: " + email.linksFiltrados().size());
+
                 }
 
             }

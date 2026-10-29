@@ -16,6 +16,8 @@ public class LeitorHtml {
             "editar", "criar", "cancelar", "descadastr", "configura","unsubscribe"
     );
 
+    private static final int TAMANHO_MAXIMO_TEXTO = 6000;
+
     public List<Link> extrairLinks(String html){
 
         List<Link> links = new ArrayList<>();
@@ -48,5 +50,14 @@ public class LeitorHtml {
             }
         }
         return false;
+    }
+
+    public String extrairTexto(String html){
+        Document doc = Jsoup.parse(html);
+        String texto = doc.text();
+
+        int fim = Math.min(texto.length(), TAMANHO_MAXIMO_TEXTO);
+
+        return texto.substring(0, fim);
     }
 }
