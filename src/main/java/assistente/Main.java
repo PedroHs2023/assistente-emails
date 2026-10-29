@@ -6,10 +6,10 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 import com.google.api.services.gmail.model.Message;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException,GeneralSecurityException {
@@ -38,9 +38,10 @@ public class Main {
 //            }
 
             GmailService gmail = new GmailService();
+            LeitorHtml leitor = new LeitorHtml();
             System.out.println("Conectado ao Gmail!");
 
-            List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 10);
+            List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 2);
             if(mensagens == null){
                 System.out.println("Sem vagas para relatar");
             }else{
@@ -51,7 +52,12 @@ public class Main {
                     if(html == null){
                         System.out.println("Sem HTML");
                     }else{
-                        System.out.println("Html com " + html.length() + " caracteres");
+                        List<Link> links = leitor.extrairLinks(html);
+                        System.out.println("Links filtrados: " + links.size());
+
+                        for(Link link : links){
+                            System.out.println(" " + link.texto() + " → " + link.endereco());
+                        }
                     }
                 }
 
