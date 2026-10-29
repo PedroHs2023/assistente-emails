@@ -35,6 +35,7 @@ public class Main {
 
             GmailService gmail = new GmailService();
             LeitorHtml leitor = new LeitorHtml();
+            AnalisadorVagas analisador = new AnalisadorVagas();
             System.out.println("Conectado ao Gmail!");
 
             List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 2);
@@ -58,7 +59,12 @@ public class Main {
                     System.out.println(email.assunto());
                     System.out.println("  Texto: " + email.texto().length()+ " caracteres");
                     System.out.println("  Links: " + email.linksFiltrados().size());
-
+                    List<Vaga> vagas = analisador.analisar(email);
+                    for (Vaga vaga : vagas) {
+                        System.out.println("  💼 " + vaga.titulo() + " — " + vaga.empresa() + " (" + vaga.local() + ")");
+                        System.out.println("     " + vaga.resumo());
+                        System.out.println("     " + vaga.link());
+                    }
                 }
 
             }
