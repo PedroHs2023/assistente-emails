@@ -40,9 +40,13 @@ public class Main {
             GmailService gmail = new GmailService();
             System.out.println("Conectado ao Gmail!");
 
-            List<Message> mensagens = gmail.listarMensagens(10);
-            for(Message mensagem: mensagens){
-                System.out.println(gmail.buscarAssunto(mensagem.getId()));
+            List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 10);
+            if(mensagens == null){
+                System.out.println("Sem vagas para relatar");
+            }else{
+                for(Message mensagem: mensagens){
+                    System.out.println(gmail.buscarAssunto(mensagem.getId()));
+                }
             }
 
         } catch (ConnectException e) {

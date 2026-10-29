@@ -65,14 +65,7 @@ public class GmailService {
 
     public List<Message> listarMensagens( int quantidade) throws IOException{
 
-        List<Message> mensagens = gmail.users()
-                                        .messages()
-                                        .list("me")
-                                        .setMaxResults((long)quantidade)
-                                        .execute()
-                                        .getMessages();
-
-        return mensagens;
+        return listarMensagens(null, quantidade);
 
     }
 
@@ -98,7 +91,20 @@ public class GmailService {
         return "(sem assunto)";
     }
 
+    public List<Message> listarMensagens(String busca, int quantidade) throws IOException{
 
+        List<Message> mensagens = gmail.users()
+                .messages()
+                .list("me")
+                .setQ(busca)
+                .setMaxResults((long)quantidade)
+                .execute()
+                .getMessages();
+
+        return mensagens;
+
+
+    }
 
 
 
