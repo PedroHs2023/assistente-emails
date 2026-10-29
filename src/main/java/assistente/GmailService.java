@@ -3,6 +3,7 @@ package assistente;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartHeader;
 
 public class GmailService {
@@ -106,6 +108,34 @@ public class GmailService {
 
     }
 
+    private String procurarHtml(MessagePart parte){
 
+        if(parte.getMimeType().equals("text/html")) {
+            return new String(parte.getBody().decodeData(), StandardCharsets.UTF_8);
+        }
 
+        if( parte.getParts() != null){
+
+            for(MessagePart filha: parte.getParts()){
+                String html = procurarHtml(filha);
+                if(html != null){
+                    return html;
+                }
+            }
+
+        }
+        return null;
+
+    }
+
+    public String buscarHtml(String id) throws IOException {
+
+        Message mensagem = gmail.users()
+                .messages()
+                .get("me", id)
+                .setFormat("full")
+                .execute();
+
+        return procurarHtml(mensagem.getPayload());
+    }
 }
