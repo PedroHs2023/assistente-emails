@@ -36,6 +36,7 @@ public class Main {
             GmailService gmail = new GmailService();
             LeitorHtml leitor = new LeitorHtml();
             AnalisadorVagas analisador = new AnalisadorVagas();
+            RegistroVistos registro = new RegistroVistos();
             System.out.println("Conectado ao Gmail!");
 
             List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 2);
@@ -44,11 +45,19 @@ public class Main {
             }else{
                 for(Message mensagem: mensagens){
                     String id = mensagem.getId();
+
+                    if(registro.jaVisto(id)){
+                        continue;
+                    }
+
                     String assunto = gmail.buscarAssunto(id);
+
                     String html = gmail.buscarHtml(id);
 
                     if(html == null){
                         System.out.println("Sem HTML: " + assunto);
+                        registro.marcar(id);
+                        registro.salvar();
                         continue;
                     }
 
@@ -65,6 +74,8 @@ public class Main {
                         System.out.println("     " + vaga.resumo());
                         System.out.println("     " + vaga.link());
                     }
+                    registro.marcar(id);
+                    registro.salvar();
                 }
 
             }
