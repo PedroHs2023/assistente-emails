@@ -1,8 +1,88 @@
-.root{
+/* ===== Base ===== */
+.root {
     -fx-background-color: #121212;
+    -fx-font-family: "Helvetica Neue", "System";
 }
 
-.label{
+.label {
     -fx-text-fill: #f2f2f2;
+}
+
+/* ===== Menu lateral ===== */
+.menu-lateral {
+    -fx-background-color: #171717;
+    -fx-border-color: transparent #262626 transparent transparent;
+    -fx-padding: 24 16 24 16;
+    -fx-pref-width: 210;
+}
+
+.nome-app {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 8 16 8;
+}
+
+.item-menu {
+    -fx-background-color: transparent;
+    -fx-text-fill: #a3a3a3;
     -fx-font-size: 14px;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 8;
+    -fx-alignment: center-left;
+    -fx-max-width: infinity;
+    -fx-cursor: hand;
+}
+
+.item-menu:hover {
+    -fx-background-color: #1f1f1f;
+}
+
+.item-menu-ativo {
+    -fx-background-color: #242424;
+    -fx-text-fill: #f2f2f2;
+}
+
+/* ===== Conteúdo ===== */
+.conteudo {
+    -fx-padding: 32 40 32 40;
+}
+
+.titulo {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.subtitulo {
+    -fx-font-size: 14px;
+    -fx-text-fill: #a3a3a3;
+}
+
+/* ===== Botão principal ===== */
+.botao-principal {
+    -fx-background-color: #78a9ff;
+    -fx-text-fill: #0d1726;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 20 12 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.botao-principal:hover {
+    -fx-background-color: #9cc0ff;
+}
+
+/* ===== Lista ===== */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: #121212;
+    -fx-border-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #e6e6e6;
+    -fx-padding: 16;
+    -fx-border-color: #121212;
+    -fx-border-width: 0 0 8 0;
 }

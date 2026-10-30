@@ -5,79 +5,28 @@ import java.net.ConnectException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
-import com.google.api.services.gmail.model.Message;
-
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException,GeneralSecurityException {
+    public static void main(String[] args)
+            throws IOException, InterruptedException, GeneralSecurityException {
 
         try {
-//            OllamaClient cliente = new OllamaClient();
-//
-//            String sistemaJson = """
-//                    Responda apenas JSON no formato: {"itens":[{"nome":"","ano":0}]}
-//                    """;
-//            String pergunta = "liste 3 linguagens de programação e o ano em que foram criadas";
-//
-//            String resposta = cliente.perguntar(sistemaJson, pergunta, true);
-//
-//            // 1. transforma o texto em árvore e pega a lista "itens"
-//            JsonArray itens = JsonParser.parseString(resposta)
-//                    .getAsJsonObject()
-//                    .getAsJsonArray("itens");
-//
-//            // 2. para cada item da lista...
-//            for (JsonElement item : itens) {
-//                JsonObject linguagem = item.getAsJsonObject();     // trata o item como objeto { }
-//                String nome = linguagem.get("nome").getAsString(); // texto
-//                int ano = linguagem.get("ano").getAsInt();         // número
-//                System.out.println(nome + " - " + ano);
-//            }
 
-            GmailService gmail = new GmailService();
-            LeitorHtml leitor = new LeitorHtml();
-            AnalisadorVagas analisador = new AnalisadorVagas();
-            RegistroVistos registro = new RegistroVistos();
+            BuscadorVagas buscador = new BuscadorVagas();
             System.out.println("Conectado ao Gmail!");
 
-            List<Message> mensagens = gmail.listarMensagens(Config.BUSCA_VAGAS, 2);
-            if(mensagens == null){
-                System.out.println("Sem vagas para relatar");
-            }else{
-                for(Message mensagem: mensagens){
-                    String id = mensagem.getId();
 
-                    if(registro.jaVisto(id)){
-                        continue;
-                    }
+            List<Vaga> vagas = buscador.buscarNovas();
 
-                    String assunto = gmail.buscarAssunto(id);
 
-                    String html = gmail.buscarHtml(id);
-
-                    if(html == null){
-                        System.out.println("Sem HTML: " + assunto);
-                        registro.marcar(id);
-                        registro.salvar();
-                        continue;
-                    }
-
-                    String texto  = leitor.extrairTexto(html);
-                    List<Link> links = leitor.extrairLinks(html);
-
-                    Email email = new Email(id,assunto,texto,links);
-                    System.out.println(email.assunto());
-                    System.out.println("  Texto: " + email.texto().length()+ " caracteres");
-                    System.out.println("  Links: " + email.linksFiltrados().size());
-                    List<Vaga> vagas = analisador.analisar(email);
-                    for (Vaga vaga : vagas) {
-                        System.out.println("  💼 " + vaga.titulo() + " — " + vaga.empresa() + " (" + vaga.local() + ")");
-                        System.out.println("     " + vaga.resumo());
-                        System.out.println("     " + vaga.link());
-                    }
-                    registro.marcar(id);
-                    registro.salvar();
+            if (vagas.isEmpty()) {
+                System.out.println("Nenhuma vaga nova.");
+            } else {
+                System.out.println(vagas.size() + " vagas novas:");
+                for (Vaga vaga : vagas) {
+                    System.out.println("  💼 " + vaga.titulo() + " — " + vaga.empresa() + " (" + vaga.local() + ")");
+                    System.out.println("     " + vaga.resumo());
+                    System.out.println("     " + vaga.link());
                 }
-
             }
 
         } catch (ConnectException e) {
