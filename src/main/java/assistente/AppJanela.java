@@ -64,8 +64,9 @@ public class AppJanela extends Application {
         cabecalho.setAlignment(Pos.CENTER_LEFT);
 
         // ===== BLOCO 3: lista e conteúdo =====
-        ListView<String> listaVagas = new ListView<>();
+        ListView<Vaga> listaVagas = new ListView<>();
         listaVagas.setPlaceholder(new Label("Nenhuma vaga ainda."));
+        listaVagas.setCellFactory(lista -> new CelulaVaga(getHostServices()));
 
         VBox conteudo = new VBox(24, cabecalho, listaVagas);
         conteudo.getStyleClass().add("conteudo");
@@ -91,11 +92,7 @@ public class AppJanela extends Application {
             // 🆕 quando terminar bem: mostra as vagas (de volta na thread da tela)
             tarefa.setOnSucceeded(e -> {
                 List<Vaga> vagas = tarefa.getValue();
-                listaVagas.getItems().clear();
-                for (Vaga vaga : vagas) {
-                    String linha = vaga.titulo() + " — " + vaga.empresa() + " (" + vaga.local() + ")";
-                    listaVagas.getItems().add(linha);
-                }
+                listaVagas.getItems().setAll(vagas);
                 if (vagas.isEmpty()) {
                     subtitulo.setText("Nenhuma vaga nova.");
                 } else {
