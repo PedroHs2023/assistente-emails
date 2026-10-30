@@ -108,18 +108,18 @@ public class GmailService {
 
     }
 
-    private String procurarHtml(MessagePart parte){
+    private String procurarParte(MessagePart parte, String tipo){
 
-        if(parte.getMimeType().equals("text/html")) {
+        if(parte.getMimeType().equals(tipo)) {
             return new String(parte.getBody().decodeData(), StandardCharsets.UTF_8);
         }
 
         if( parte.getParts() != null){
 
             for(MessagePart filha: parte.getParts()){
-                String html = procurarHtml(filha);
-                if(html != null){
-                    return html;
+                String resultado = procurarParte(filha, tipo);
+                if(resultado != null){
+                    return resultado;
                 }
             }
 
@@ -136,6 +136,17 @@ public class GmailService {
                 .setFormat("full")
                 .execute();
 
-        return procurarHtml(mensagem.getPayload());
+        return procurarParte(mensagem.getPayload(), "text/html");
+    }
+
+    public String buscarTexto(String id) throws IOException {
+
+        Message mensagem = gmail.users()
+                .messages()
+                .get("me", id)
+                .setFormat("full")
+                .execute();
+
+        return procurarParte(mensagem.getPayload(), "text/plain");
     }
 }
