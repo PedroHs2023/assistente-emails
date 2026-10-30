@@ -11,22 +11,10 @@ public class Main {
 
         try {
 
-            BuscadorVagas buscador = new BuscadorVagas();
-            System.out.println("Conectado ao Gmail!");
-
-
-            List<Vaga> vagas = buscador.buscarNovas();
-
-
-            if (vagas.isEmpty()) {
-                System.out.println("Nenhuma vaga nova.");
-            } else {
-                System.out.println(vagas.size() + " vagas novas:");
-                for (Vaga vaga : vagas) {
-                    System.out.println("  💼 " + vaga.titulo() + " — " + vaga.empresa() + " (" + vaga.local() + ")");
-                    System.out.println("     " + vaga.resumo());
-                    System.out.println("     " + vaga.link());
-                }
+            BuscadorNoticias buscador = new BuscadorNoticias();
+            for (Noticia noticia : buscador.buscarTodas()) {
+                System.out.println(noticia.categoria() + " · " + noticia.remetente() + " · " + noticia.assunto());
+                System.out.println("   " + noticia.texto().length() + " caracteres");
             }
 
         } catch (ConnectException e) {

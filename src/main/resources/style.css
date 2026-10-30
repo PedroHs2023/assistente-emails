@@ -1,6 +1,6 @@
 /* ===== Base ===== */
 .root {
-    -fx-background-color: #121212;
+    -fx-background-color: #000000;
     -fx-font-family: "Helvetica Neue", "System";
 }
 
@@ -156,4 +156,91 @@
 /* ===== Carregando ===== */
 .progress-indicator {
     -fx-progress-color: #78a9ff;
+}
+/* ===== Filtros (notícias) ===== */
+.filtro {
+    -fx-background-color: transparent;
+    -fx-border-color: #2e2e2e;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-text-fill: #cfcfcf;
+    -fx-font-size: 13px;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.filtro:hover {
+    -fx-border-color: #4a4a4a;
+}
+
+.filtro-ativo {
+    -fx-background-color: #1c2433;
+    -fx-border-color: #78a9ff;
+    -fx-text-fill: #f2f2f2;
+}
+
+/* ===== Cartão de notícia ===== */
+.cartao-categoria {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9cc0ff;
+}
+
+.cartao-link-secundario {
+    -fx-text-fill: #a3a3a3;
+    -fx-font-size: 13px;
+    -fx-padding: 4 0 0 0;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+
+.cartao-link-secundario:hover {
+    -fx-text-fill: #d4d4d4;
+    -fx-underline: true;
+}
+
+/* ===== Janela de leitura ===== */
+.leitor {
+    -fx-padding: 40 48 48 48;
+    -fx-background-color: #121212;
+}
+
+.leitor-texto {
+    -fx-font-size: 15px;
+    -fx-text-fill: #e6e6e6;
+    -fx-line-spacing: 4;
+}
+
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: #121212;
+    -fx-background: #121212;
+    -fx-border-color: transparent;
+}
+/* ===== Notícias: cartão clicável e leitura ===== */
+.list-cell:filled {
+    -fx-cursor: hand;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+
+.cartao-dica {
+    -fx-font-size: 13px;
+    -fx-text-fill: #9cc0ff;
+    -fx-padding: 4 0 0 0;
+}
+
+.botao-secundario {
+    -fx-background-color: #242424;
+    -fx-text-fill: #f2f2f2;
+    -fx-font-size: 13px;
+    -fx-padding: 8 14 8 14;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.botao-secundario:hover {
+    -fx-background-color: #2e2e2e;
 }

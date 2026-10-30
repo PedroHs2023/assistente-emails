@@ -1,13 +1,13 @@
 package assistente;
 
 import javafx.application.Application;
-import javafx.concurrent.Task;                                    // 🆕
+import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressIndicator;                    // 🆕
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -23,6 +23,7 @@ public class AppJanela extends Application {
     public void start(Stage palco) throws Exception {
 
         BuscadorVagas buscador = new BuscadorVagas();
+        BuscadorNoticias buscadorNoticias = new BuscadorNoticias();                       // 🆕
 
         // ===== BLOCO 1: menu lateral =====
         Label nomeApp = new Label("Assistente");
@@ -41,7 +42,7 @@ public class AppJanela extends Application {
         VBox menuLateral = new VBox(8, nomeApp, menuVagas, menuNoticias, menuChat, menuConfig);
         menuLateral.getStyleClass().add("menu-lateral");
 
-        // ===== BLOCO 2: cabeçalho =====
+        // ===== BLOCO 2: cabeçalho (vagas) =====
         Label titulo = new Label("Vagas novas");
         titulo.getStyleClass().add("titulo");
 
@@ -53,17 +54,17 @@ public class AppJanela extends Application {
         Button botaoBuscar = new Button("Buscar vagas");
         botaoBuscar.getStyleClass().add("botao-principal");
 
-        ProgressIndicator carregando = new ProgressIndicator();   // 🆕 a rodinha
-        carregando.setPrefSize(24, 24);                           // 🆕
-        carregando.setVisible(false);                             // 🆕 começa escondida
+        ProgressIndicator carregando = new ProgressIndicator();
+        carregando.setPrefSize(24, 24);
+        carregando.setVisible(false);
 
         Region espaco = new Region();
         HBox.setHgrow(espaco, Priority.ALWAYS);
 
-        HBox cabecalho = new HBox(16, textos, espaco, carregando, botaoBuscar);   // 🆕 carregando antes do botão
+        HBox cabecalho = new HBox(16, textos, espaco, carregando, botaoBuscar);
         cabecalho.setAlignment(Pos.CENTER_LEFT);
 
-        // ===== BLOCO 3: lista e conteúdo =====
+        // ===== BLOCO 3: lista e conteúdo (vagas) =====
         ListView<Vaga> listaVagas = new ListView<>();
         listaVagas.setPlaceholder(new Label("Nenhuma vaga ainda."));
         listaVagas.setCellFactory(lista -> new CelulaVaga(getHostServices()));
@@ -72,16 +73,17 @@ public class AppJanela extends Application {
         conteudo.getStyleClass().add("conteudo");
         VBox.setVgrow(listaVagas, Priority.ALWAYS);
 
-        // ===== AÇÃO DO BOTÃO =====
+        // ===== 🆕 TELA DE NOTÍCIAS =====
+        TelaNoticias telaNoticias = new TelaNoticias(buscadorNoticias, getHostServices());
+
+        // ===== AÇÃO DO BOTÃO (vagas) =====
         botaoBuscar.setOnAction(evento -> {
 
-            // 🆕 ANTES de começar: mostra que está carregando
             botaoBuscar.setDisable(true);
             botaoBuscar.setText("Buscando…");
             carregando.setVisible(true);
             subtitulo.setText("Lendo os e-mails e analisando com a IA…");
 
-            // 🆕 o trabalho pesado, numa thread de fundo
             Task<List<Vaga>> tarefa = new Task<>() {
                 @Override
                 protected List<Vaga> call() throws Exception {
@@ -89,7 +91,6 @@ public class AppJanela extends Application {
                 }
             };
 
-            // 🆕 quando terminar bem: mostra as vagas (de volta na thread da tela)
             tarefa.setOnSucceeded(e -> {
                 List<Vaga> vagas = tarefa.getValue();
                 listaVagas.getItems().setAll(vagas);
@@ -101,23 +102,35 @@ public class AppJanela extends Application {
                 voltarAoNormal(botaoBuscar, carregando);
             });
 
-            // 🆕 quando der erro: avisa
             tarefa.setOnFailed(e -> {
                 subtitulo.setText("Erro ao buscar vagas: " + tarefa.getException().getMessage());
                 voltarAoNormal(botaoBuscar, carregando);
             });
 
-            // 🆕 coloca para rodar numa thread nova
             Thread trabalhador = new Thread(tarefa);
             trabalhador.setDaemon(true);
             trabalhador.start();
         });
 
-        // ===== BLOCO 4: juntar tudo e mostrar =====
+        // ===== BLOCO 4: juntar tudo =====
         BorderPane raiz = new BorderPane();
         raiz.setLeft(menuLateral);
         raiz.setCenter(conteudo);
 
+        // ===== 🆕 NAVEGAÇÃO DO MENU =====
+        List<Button> itensMenu = List.of(menuVagas, menuNoticias, menuChat, menuConfig);
+
+        menuVagas.setOnAction(evento -> {
+            raiz.setCenter(conteudo);
+            ativarMenu(menuVagas, itensMenu);
+        });
+
+        menuNoticias.setOnAction(evento -> {
+            raiz.setCenter(telaNoticias);
+            ativarMenu(menuNoticias, itensMenu);
+        });
+
+        // ===== mostrar =====
         Scene cena = new Scene(raiz, 1100, 720);
         cena.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
@@ -126,10 +139,18 @@ public class AppJanela extends Application {
         palco.show();
     }
 
-    // 🆕 ajudante: volta o botão e a rodinha ao estado normal
+    // ajudante: volta o botão e a rodinha ao estado normal
     private void voltarAoNormal(Button botao, ProgressIndicator carregando) {
         botao.setDisable(false);
         botao.setText("Buscar vagas");
         carregando.setVisible(false);
+    }
+
+    // 🆕 ajudante: destaca o item do menu clicado
+    private void ativarMenu(Button ativo, List<Button> itens) {
+        for (Button item : itens) {
+            item.getStyleClass().remove("item-menu-ativo");
+        }
+        ativo.getStyleClass().add("item-menu-ativo");
     }
 }
